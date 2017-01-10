@@ -48,8 +48,8 @@ export function jsonpFactory(jsonpBackend: JSONPBackend, requestOptions: Request
     // issue: https://github.com/angular/angular/issues/3183
     {provide: Http, useFactory: httpFactory, deps: [XHRBackend, RequestOptions]},
     BrowserXhr,
-    {provide: RequestOptions, useClass: BaseRequestOptions},
-    {provide: ResponseOptions, useClass: BaseResponseOptions},
+    RequestOptions,
+    ResponseOptions,
     XHRBackend,
     {provide: XSRFStrategy, useFactory: _createDefaultCookieXSRFStrategy},
   ],
