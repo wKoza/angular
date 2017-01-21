@@ -11,7 +11,7 @@ import {ChangeDetectorRef, ChangeDetectorStatus} from '../change_detection/chang
 import {Injector, THROW_IF_NOT_FOUND} from '../di/injector';
 import {isPresent} from '../facade/lang';
 import {WtfScopeFn, wtfCreateScope, wtfLeave} from '../profile/profile';
-import {DirectRenderer, RenderComponentType, RenderDebugInfo, Renderer} from '../render/api';
+import {DirectRenderer, RenderComponentType, Renderer} from '../render/api';
 
 import {AnimationViewContext} from './animation_view_context';
 import {ComponentRef} from './component_factory';
@@ -47,6 +47,7 @@ export abstract class AppView<T> {
   appRef: ApplicationRef;
 
   numberOfChecks: number = 0;
+  throwOnChange: boolean = false;
 
   renderer: Renderer;
 
@@ -326,7 +327,8 @@ export abstract class AppView<T> {
     if (this.cdMode === ChangeDetectorStatus.Destroyed) {
       this.throwDestroyedError('detectChanges');
     }
-    this.detectChangesInternal(throwOnChange);
+    this.throwOnChange = throwOnChange;
+    this.detectChangesInternal();
     if (this.cdMode === ChangeDetectorStatus.CheckOnce) this.cdMode = ChangeDetectorStatus.Checked;
 
     this.numberOfChecks++;
@@ -336,7 +338,7 @@ export abstract class AppView<T> {
   /**
    * Overwritten by implementations
    */
-  detectChangesInternal(throwOnChange: boolean): void {}
+  detectChangesInternal(): void {}
 
   markAsCheckOnce(): void { this.cdMode = ChangeDetectorStatus.CheckOnce; }
 

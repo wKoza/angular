@@ -69,12 +69,21 @@ export class WebAnimationsPlayer implements AnimationPlayer {
 
     const previousStyleProps = Object.keys(this.previousStyles);
     if (previousStyleProps.length) {
-      let startingKeyframe = findStartingKeyframe(keyframes);
+      let startingKeyframe = keyframes[0];
+      let missingStyleProps: string[] = [];
       previousStyleProps.forEach(prop => {
-        if (isPresent(startingKeyframe[prop])) {
-          startingKeyframe[prop] = this.previousStyles[prop];
+        if (!isPresent(startingKeyframe[prop])) {
+          missingStyleProps.push(prop);
         }
+        startingKeyframe[prop] = this.previousStyles[prop];
       });
+
+      if (missingStyleProps.length) {
+        for (let i = 1; i < keyframes.length; i++) {
+          let kf = keyframes[i];
+          missingStyleProps.forEach(prop => { kf[prop] = _computeStyle(this.element, prop); });
+        }
+      }
     }
 
     this._player = this._triggerWebAnimation(this.element, keyframes, this.options);
@@ -87,7 +96,9 @@ export class WebAnimationsPlayer implements AnimationPlayer {
 
   /** @internal */
   _triggerWebAnimation(element: any, keyframes: any[], options: any): DomAnimatePlayer {
-    return <DomAnimatePlayer>element.animate(keyframes, options);
+    // jscompiler doesn't seem to know animate is a native property because it's not fully
+    // supported yet across common browsers (we polyfill it for Edge/Safari) [CL #143630929]
+    return <DomAnimatePlayer>element['animate'](keyframes, options);
   }
 
   get domPlayer() { return this._player; }
@@ -179,18 +190,4 @@ function _copyKeyframeStyles(styles: {[style: string]: string | number}):
     }
   });
   return newStyles;
-}
-
-function findStartingKeyframe(keyframes: {[prop: string]: string | number}[]):
-    {[prop: string]: string | number} {
-  let startingKeyframe = keyframes[0];
-  // it's important that we find the LAST keyframe
-  // to ensure that style overidding is final.
-  for (let i = 1; i < keyframes.length; i++) {
-    const kf = keyframes[i];
-    const offset = kf['offset'];
-    if (offset !== 0) break;
-    startingKeyframe = kf;
-  }
-  return startingKeyframe;
 }

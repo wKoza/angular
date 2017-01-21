@@ -6,16 +6,18 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {OpaqueToken} from '@angular/core';
+import {InjectionToken} from '@angular/core';
 import {toPromise} from 'rxjs/operator/toPromise';
-import {AsyncValidatorFn, ValidatorFn} from './directives/validators';
+
+import {AsyncValidatorFn, Validator, ValidatorFn} from './directives/validators';
 import {StringMapWrapper} from './facade/collection';
 import {isPresent} from './facade/lang';
 import {AbstractControl} from './model';
 import {isPromise} from './private_import_core';
 
-function isEmptyInputValue(value: any) {
-  return value == null || typeof value === 'string' && value.length === 0;
+function isEmptyInputValue(value: any): boolean {
+  // we don't check for string here so it also works with arrays
+  return value == null || value.length === 0;
 }
 
 /**
@@ -28,7 +30,7 @@ function isEmptyInputValue(value: any) {
  * {@example core/forms/ts/ng_validators/ng_validators.ts region='ng_validators'}
  * @stable
  */
-export const NG_VALIDATORS: OpaqueToken = new OpaqueToken('NgValidators');
+export const NG_VALIDATORS = new InjectionToken<Array<Validator|Function>>('NgValidators');
 
 /**
  * Providers for asynchronous validators to be used for {@link FormControl}s
@@ -40,7 +42,8 @@ export const NG_VALIDATORS: OpaqueToken = new OpaqueToken('NgValidators');
  *
  * @stable
  */
-export const NG_ASYNC_VALIDATORS: OpaqueToken = new OpaqueToken('NgAsyncValidators');
+export const NG_ASYNC_VALIDATORS =
+    new InjectionToken<Array<Validator|Function>>('NgAsyncValidators');
 
 /**
  * Provides a set of validators used by form controls.

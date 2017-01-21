@@ -133,7 +133,8 @@ If you happen to modify the public API of Angular, API golden files must be upda
 $ gulp public-api:update
 ```
 
-Note: The command `./test.sh tools` fails when the API doesn't match the golden files.
+Note: The command `gulp public-api:enforce` fails when the API doesn't match the golden files. Make sure to rebuild
+the project before trying to verify after an API change.
 
 ## <a name="clang-format"></a> Formatting your source code
 
@@ -146,7 +147,21 @@ You can automatically format your code by running:
 $ gulp format
 ```
 
-## Publishing your own personal snapshot build
+## Linting/verifying your source code
+
+You can check that your code is properly formatted and adheres to coding style by running:
+
+``` shell
+$ gulp lint
+```
+
+## Publishing snapshot builds
+
+When the `master` branch successfully builds on Travis, it automatically publishes build artifacts
+to repositories in the Angular org, eg. the `@angular/core` package is published to
+http://github.com/angular/core-builds.
+The ES2015 version of Angular is published to a different branch in these repos, for example
+http://github.com/angular/core-builds#master-es2015
 
 You may find that your un-merged change needs some validation from external participants.
 Rather than requiring them to pull your Pull Request and build Angular locally, you can

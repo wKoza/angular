@@ -99,9 +99,10 @@ export class TsickleCompilerHost extends DelegatingHost {
         // Don't tsickle-process any d.ts that isn't a compilation target;
         // this means we don't process e.g. lib.d.ts.
         if (isDefinitions) return sourceFile;
-
-        let {output, externs, diagnostics} =
-            tsickle.annotate(this.oldProgram, sourceFile, {untyped: true});
+        const es2015Target = this.options.target == ts.ScriptTarget.ES2015;  // This covers ES6 too
+        let {output, externs, diagnostics} = tsickle.annotate(
+            this.oldProgram, sourceFile, {untyped: true, convertIndexImportShorthand: es2015Target},
+            this.delegate, this.options);
         this.diagnostics = diagnostics;
         return ts.createSourceFile(fileName, output, languageVersion, true);
       }
@@ -119,9 +120,19 @@ export class MetadataWriterHost extends DelegatingHost {
     // released
     if (/*DTS*/ /\.js$/.test(emitFilePath)) {
       const path = emitFilePath.replace(/*DTS*/ /\.js$/, '.metadata.json');
+
+      // Beginning with 2.1, TypeScript transforms the source tree before emitting it.
+      // We need the original, unmodified, tree which might be several levels back
+      // depending on the number of transforms performed. All SourceFile's prior to 2.1
+      // will appear to be the original source since they didn't include an original field.
+      let collectableFile = sourceFile;
+      while ((collectableFile as any).original) {
+        collectableFile = (collectableFile as any).original;
+      }
+
       const metadata =
-          this.metadataCollector.getMetadata(sourceFile, !!this.ngOptions.strictMetadataEmit);
-      const metadata1 = this.metadataCollector1.getMetadata(sourceFile, false);
+          this.metadataCollector.getMetadata(collectableFile, !!this.ngOptions.strictMetadataEmit);
+      const metadata1 = this.metadataCollector1.getMetadata(collectableFile, false);
       const metadatas: ModuleMetadata[] = [metadata, metadata1].filter(e => !!e);
       if (metadatas.length) {
         const metadataText = JSON.stringify(metadatas);

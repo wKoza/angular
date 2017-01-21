@@ -8,20 +8,19 @@
 
 import {ViewEncapsulation} from '@angular/core';
 
-import {CompileDirectiveMetadata, CompileDirectiveSummary, CompileIdentifierMetadata, CompileTokenMetadata, identifierModuleUrl, identifierName, viewClassName} from '../compile_metadata';
+import {CompileDirectiveSummary, identifierModuleUrl, identifierName} from '../compile_metadata';
 import {createSharedBindingVariablesIfNeeded} from '../compiler_util/expression_converter';
 import {createDiTokenExpression, createInlineArray} from '../compiler_util/identifier_util';
 import {isPresent} from '../facade/lang';
 import {Identifiers, createIdentifier, identifierToken} from '../identifiers';
 import {createClassStmt} from '../output/class_builder';
 import * as o from '../output/output_ast';
-import {ParseSourceSpan} from '../parse_util';
 import {ChangeDetectorStatus, ViewType, isDefaultChangeDetectionStrategy} from '../private_import_core';
 import {AttrAst, BoundDirectivePropertyAst, BoundElementPropertyAst, BoundEventAst, BoundTextAst, DirectiveAst, ElementAst, EmbeddedTemplateAst, NgContentAst, ReferenceAst, TemplateAst, TemplateAstVisitor, TextAst, VariableAst, templateVisitAll} from '../template_parser/template_ast';
 
 import {CompileElement, CompileNode} from './compile_element';
 import {CompileView, CompileViewRootNode, CompileViewRootNodeType} from './compile_view';
-import {ChangeDetectorStatusEnum, DetectChangesVars, InjectMethodVars, ViewConstructorVars, ViewEncapsulationEnum, ViewProperties, ViewTypeEnum} from './constants';
+import {ChangeDetectorStatusEnum, InjectMethodVars, ViewConstructorVars, ViewEncapsulationEnum, ViewProperties, ViewTypeEnum} from './constants';
 import {ComponentFactoryDependency, ComponentViewDependency, DirectiveWrapperDependency} from './deps';
 
 const IMPLICIT_TEMPLATE_VAR = '\$implicit';
@@ -403,8 +402,9 @@ function createViewTopLevelStmts(view: CompileView, targetStatements: o.Statemen
               o.literal(view.component.template.ngContentSelectors.length),
               ViewEncapsulationEnum.fromValue(view.component.template.encapsulation),
               view.styles,
-              o.literalMap(view.animations.map(
-                  (entry): [string, o.Expression] => [entry.name, entry.fnExp])),
+              o.literalMap(
+                  view.animations.map((entry): [string, o.Expression] => [entry.name, entry.fnExp]),
+                  null, true),
             ]))
             .toDeclStmt(o.importType(createIdentifier(Identifiers.RenderComponentType))));
   }
@@ -483,9 +483,7 @@ function createViewClass(
         ],
         addReturnValuefNotEmpty(view.injectorGetMethod.finish(), InjectMethodVars.notFoundResult),
         o.DYNAMIC_TYPE),
-    new o.ClassMethod(
-        'detectChangesInternal', [new o.FnParam(DetectChangesVars.throwOnChange.name, o.BOOL_TYPE)],
-        generateDetectChangesMethod(view)),
+    new o.ClassMethod('detectChangesInternal', [], generateDetectChangesMethod(view)),
     new o.ClassMethod('dirtyParentQueriesInternal', [], view.dirtyParentQueriesMethod.finish()),
     new o.ClassMethod('destroyInternal', [], generateDestroyMethod(view)),
     new o.ClassMethod('detachInternal', [], view.detachMethod.finish()),
@@ -569,36 +567,26 @@ function generateDetectChangesMethod(view: CompileView): o.Statement[] {
   stmts.push(...view.detectChangesInInputsMethod.finish());
   view.viewContainers.forEach((viewContainer) => {
     stmts.push(
-        viewContainer.callMethod('detectChangesInNestedViews', [DetectChangesVars.throwOnChange])
+        viewContainer.callMethod('detectChangesInNestedViews', [ViewProperties.throwOnChange])
             .toStmt());
   });
   const afterContentStmts = view.updateContentQueriesMethod.finish().concat(
       view.afterContentLifecycleCallbacksMethod.finish());
   if (afterContentStmts.length > 0) {
-    stmts.push(new o.IfStmt(o.not(DetectChangesVars.throwOnChange), afterContentStmts));
+    stmts.push(new o.IfStmt(o.not(ViewProperties.throwOnChange), afterContentStmts));
   }
   stmts.push(...view.detectChangesRenderPropertiesMethod.finish());
   view.viewChildren.forEach((viewChild) => {
     stmts.push(
-        viewChild.callMethod('internalDetectChanges', [DetectChangesVars.throwOnChange]).toStmt());
+        viewChild.callMethod('internalDetectChanges', [ViewProperties.throwOnChange]).toStmt());
   });
   const afterViewStmts =
       view.updateViewQueriesMethod.finish().concat(view.afterViewLifecycleCallbacksMethod.finish());
   if (afterViewStmts.length > 0) {
-    stmts.push(new o.IfStmt(o.not(DetectChangesVars.throwOnChange), afterViewStmts));
+    stmts.push(new o.IfStmt(o.not(ViewProperties.throwOnChange), afterViewStmts));
   }
 
-  const varStmts: any[] = [];
-  const readVars = o.findReadVarNames(stmts);
-  if (readVars.has(DetectChangesVars.changed.name)) {
-    varStmts.push(DetectChangesVars.changed.set(o.literal(true)).toDeclStmt(o.BOOL_TYPE));
-  }
-  if (readVars.has(DetectChangesVars.changes.name)) {
-    varStmts.push(
-        DetectChangesVars.changes.set(o.NULL_EXPR)
-            .toDeclStmt(new o.MapType(o.importType(createIdentifier(Identifiers.SimpleChange)))));
-  }
-  varStmts.push(...createSharedBindingVariablesIfNeeded(stmts));
+  const varStmts = createSharedBindingVariablesIfNeeded(stmts);
   return varStmts.concat(stmts);
 }
 
@@ -693,7 +681,6 @@ function generateCreateEmbeddedViewsMethod(view: CompileView): o.ClassMethod {
   view.nodes.forEach((node) => {
     if (node instanceof CompileElement) {
       if (node.embeddedView) {
-        const parentNodeIndex = node.isRootElement() ? null : node.parent.nodeIndex;
         stmts.push(new o.IfStmt(
             nodeIndexVar.equals(o.literal(node.nodeIndex)),
             [new o.ReturnStatement(node.embeddedView.classExpr.instantiate([

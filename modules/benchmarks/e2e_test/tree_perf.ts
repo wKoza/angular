@@ -50,6 +50,18 @@ describe('tree benchmark perf', () => {
         }).then(done, done.fail);
       });
 
+      it('should run for ng2 next', (done) => {
+        runTreeBenchmark({
+          id: `deepTree.ng2.next.${worker.id}`,
+          url: 'all/benchmarks/src/tree/ng2_next/index.html',
+          ignoreBrowserSynchronization: true,
+          work: worker.work,
+          prepare: worker.prepare,
+          // Can't use bundles as we use non exported code
+          extraParams: [{name: 'bundles', value: false}]
+        }).then(done, done.fail);
+      });
+
       it('should run for ng2 ftl', (done) => {
         runTreeBenchmark({
           id: `deepTree.ng2.ftl.${worker.id}`,
@@ -134,11 +146,34 @@ describe('tree benchmark perf', () => {
     });
   });
 
+  it('should run ng2 changedetection', (done) => {
+    runTreeBenchmark({
+      id: `deepTree.ng2.changedetection`,
+      url: 'all/benchmarks/src/tree/ng2/index.html',
+      work: () => $('#detectChanges').click(),
+      setup: () => $('#createDom').click(),
+    }).then(done, done.fail);
+  });
+
+  it('should run ng2 next changedetection', (done) => {
+    runTreeBenchmark({
+      id: `deepTree.ng2.next.changedetection`,
+      url: 'all/benchmarks/src/tree/ng2_next/index.html',
+      work: () => $('#detectChanges').click(),
+      setup: () => $('#createDom').click(),
+      ignoreBrowserSynchronization: true,
+      // Can't use bundles as we use non exported code
+      extraParams: [{name: 'bundles', value: false}]
+    }).then(done, done.fail);
+  });
+
   function runTreeBenchmark(config: {
     id: string,
     url: string, ignoreBrowserSynchronization?: boolean,
     work: () => any,
-    prepare: () => any, extraParams?: {name: string, value: any}[]
+    prepare?: () => any,
+    extraParams?: {name: string, value: any}[],
+    setup?: () => any
   }) {
     let params = [{name: 'depth', value: 11}];
     if (config.extraParams) {
@@ -150,7 +185,8 @@ describe('tree benchmark perf', () => {
       ignoreBrowserSynchronization: config.ignoreBrowserSynchronization,
       params: params,
       work: config.work,
-      prepare: config.prepare
+      prepare: config.prepare,
+      setup: config.setup
     });
   }
 });
