@@ -10,6 +10,7 @@ import 'rxjs/add/operator/map';
 
 import {Injector} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
+import {ddescribe} from '@angular/core/testing/src/testing_internal';
 import {Observable} from 'rxjs/Observable';
 
 import {HttpHandler} from '../src/backend';
@@ -47,6 +48,16 @@ class InterceptorB extends TestInterceptor {
   constructor() { super('B'); }
 }
 
+class InterceptorC implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, delegate: HttpHandler): Observable<HttpEvent<any>> {
+    console.log(JSON.stringify(req));
+    req.metadata['test'] = false;
+    req = req.clone({metadata: req.metadata});
+    return delegate.handle(req);
+  }
+}
+
+
 export function main() {
   describe('HttpClientModule', () => {
     let injector: Injector;
@@ -66,6 +77,16 @@ export function main() {
       });
       injector.get(HttpTestingController).expectOne('/test').flush('ok!');
     });
+    it('intercepts outbound request in the order in which interceptors were bound',
+       (done: DoneFn) => {
+         injector.get(HttpClient)
+             .get('/test', {metadata: {test: true}, observe: 'response', responseType: 'text'})
+             .subscribe(value => done());
+         const req = injector.get(HttpTestingController).expectOne('/test') as TestRequest;
+         expect(req.request.headers.get('Intercepted')).toEqual('A,B');
+         expect(req.request.metadata['test']).toEqual(false);
+         req.flush('ok!');
+       });
     it('intercepts outbound responses in the order in which interceptors were bound',
        (done: DoneFn) => {
          injector.get(HttpClient)
@@ -84,5 +105,33 @@ export function main() {
           });
       injector.get(HttpTestingController).expectOne('/test').flush('ok!');
     });
+  });
+
+  describe('HttpClientModule2', () => {
+    let injector: Injector;
+    beforeEach(() => {
+      injector = TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule],
+        providers: [{provide: HTTP_INTERCEPTORS, useClass: InterceptorC, multi: true}],
+      });
+    });
+    it('initializes HttpClient properly', (done: DoneFn) => {
+      injector.get(HttpClient)
+          .get('/test', {metadata: {'test': 'true'}, responseType: 'text'})
+          .subscribe(value => {
+            expect(value).toBe('ok!');
+            done();
+          });
+      injector.get(HttpTestingController).expectOne('/test').flush('ok!');
+    });
+    it('intercepts outbound request in the order in which interceptors were bound',
+       (done: DoneFn) => {
+         injector.get(HttpClient)
+             .get('/test', {metadata: {'test': 'true'}, observe: 'response', responseType: 'text'})
+             .subscribe(value => done());
+         const req = injector.get(HttpTestingController).expectOne('/test') as TestRequest;
+         expect(req.request.metadata).toEqual({'test': false});
+         req.flush('ok!');
+       });
   });
 }

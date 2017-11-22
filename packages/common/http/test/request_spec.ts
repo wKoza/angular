@@ -57,6 +57,11 @@ export function main() {
         const req = new HttpRequest('GET', TEST_URL, {headers});
         expect(req.headers).toBe(headers);
       });
+      it('uses the provided metadata if passed', () => {
+        const metadata = {'test': 'true'};
+        const req = new HttpRequest('GET', TEST_URL, {metadata});
+        expect(req.metadata).toBe(metadata);
+      });
       it('defaults to Json', () => {
         const req = new HttpRequest('GET', TEST_URL);
         expect(req.responseType).toBe('json');
@@ -66,8 +71,10 @@ export function main() {
       const headers = new HttpHeaders({
         'Test': 'Test header',
       });
+      const metadata = {'test': 'true'};
       const req = new HttpRequest('POST', TEST_URL, 'test body', {
         headers,
+        metadata,
         reportProgress: true,
         responseType: 'text',
         withCredentials: true,
@@ -80,6 +87,9 @@ export function main() {
         // Headers should be the same, as the headers are sealed.
         expect(clone.headers).toBe(headers);
         expect(clone.headers.get('Test')).toBe('Test header');
+        // Metadata should be the same, as the metadata are sealed.
+        expect(clone.metadata).toBe(metadata);
+
       });
       it('and updates the url',
          () => { expect(req.clone({url: '/changed'}).url).toBe('/changed'); });
