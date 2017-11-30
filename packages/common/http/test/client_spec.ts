@@ -49,12 +49,6 @@ export function main() {
         client.get('/test', {params: {'test': 'true'}}).subscribe(() => done());
         backend.expectOne('/test?test=true').flush({});
       });
-      it('with metadata', (done: DoneFn) => {
-        client.get('/test', {metadata: {'test': 'true'}}).subscribe(() => done());
-        const req = backend.expectOne('/test');
-        expect(req.request.metadata).toEqual({'test': 'true'});
-        req.flush({});
-      });
       it('for an arraybuffer', (done: DoneFn) => {
         const body = new ArrayBuffer(4);
         client.get('/test', {responseType: 'arraybuffer'}).subscribe(res => {

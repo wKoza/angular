@@ -29,7 +29,6 @@ function addBody<T>(
       headers?: HttpHeaders | {[header: string]: string | string[]},
       observe?: HttpObserve,
       params?: HttpParams | {[param: string]: string | string[]},
-      metadata?: any,
       reportProgress?: boolean,
       responseType?: 'arraybuffer' | 'blob' | 'json' | 'text',
       withCredentials?: boolean,
@@ -40,7 +39,6 @@ function addBody<T>(
     headers: options.headers,
     observe: options.observe,
     params: options.params,
-    metadata: options.metadata,
     reportProgress: options.reportProgress,
     responseType: options.responseType,
     withCredentials: options.withCredentials,
@@ -80,7 +78,6 @@ export class HttpClient {
     headers?: HttpHeaders|{[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<ArrayBuffer>;
@@ -95,7 +92,6 @@ export class HttpClient {
     headers?: HttpHeaders|{[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<Blob>;
@@ -110,7 +106,6 @@ export class HttpClient {
     headers?: HttpHeaders|{[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<string>;
@@ -124,7 +119,6 @@ export class HttpClient {
     body?: any,
     headers?: HttpHeaders|{[header: string]: string | string[]},
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     observe: 'events', reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpEvent<ArrayBuffer>>;
@@ -139,7 +133,6 @@ export class HttpClient {
     headers?: HttpHeaders|{[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpEvent<Blob>>;
@@ -154,7 +147,6 @@ export class HttpClient {
     headers?: HttpHeaders|{[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpEvent<string>>;
@@ -170,7 +162,6 @@ export class HttpClient {
     reportProgress?: boolean,
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     responseType?: 'json',
     withCredentials?: boolean,
   }): Observable<HttpEvent<any>>;
@@ -186,7 +177,6 @@ export class HttpClient {
     reportProgress?: boolean,
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     responseType?: 'json',
     withCredentials?: boolean,
   }): Observable<HttpEvent<R>>;
@@ -201,7 +191,6 @@ export class HttpClient {
     headers?: HttpHeaders|{[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpResponse<ArrayBuffer>>;
@@ -216,7 +205,6 @@ export class HttpClient {
     headers?: HttpHeaders|{[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpResponse<Blob>>;
@@ -231,7 +219,6 @@ export class HttpClient {
     headers?: HttpHeaders|{[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpResponse<string>>;
@@ -247,7 +234,6 @@ export class HttpClient {
     reportProgress?: boolean,
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     responseType?: 'json',
     withCredentials?: boolean,
   }): Observable<HttpResponse<Object>>;
@@ -263,7 +249,6 @@ export class HttpClient {
     reportProgress?: boolean,
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     responseType?: 'json',
     withCredentials?: boolean,
   }): Observable<HttpResponse<R>>;
@@ -278,7 +263,6 @@ export class HttpClient {
     headers?: HttpHeaders|{[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     responseType?: 'json',
     reportProgress?: boolean,
     withCredentials?: boolean,
@@ -294,7 +278,6 @@ export class HttpClient {
     headers?: HttpHeaders|{[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     responseType?: 'json',
     reportProgress?: boolean,
     withCredentials?: boolean,
@@ -310,7 +293,6 @@ export class HttpClient {
     body?: any,
     headers?: HttpHeaders|{[header: string]: string | string[]},
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     observe?: HttpObserve,
     reportProgress?: boolean,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
@@ -353,7 +335,6 @@ export class HttpClient {
     headers?: HttpHeaders|{[header: string]: string | string[]},
     observe?: HttpObserve,
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
@@ -387,17 +368,10 @@ export class HttpClient {
         }
       }
 
-      // Sort out parameters.
-      let metadata: any|undefined = undefined;
-      if (!!options.metadata) {
-        metadata = options.metadata;
-      }
-
       // Construct the request.
       req = new HttpRequest(first, url !, (options.body !== undefined ? options.body : null), {
         headers,
         params,
-        metadata,
         reportProgress: options.reportProgress,
         // By default, JSON is assumed to be returned for all calls.
         responseType: options.responseType || 'json',
@@ -481,7 +455,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<ArrayBuffer>;
@@ -496,7 +469,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<Blob>;
@@ -510,7 +482,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<string>;
@@ -524,7 +495,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpEvent<ArrayBuffer>>;
@@ -538,7 +508,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpEvent<Blob>>;
@@ -552,7 +521,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpEvent<string>>;
@@ -566,7 +534,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -581,7 +548,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -596,7 +562,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpResponse<ArrayBuffer>>;
@@ -610,7 +575,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpResponse<Blob>>;
@@ -624,7 +588,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpResponse<string>>;
@@ -638,7 +601,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -653,7 +615,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -668,7 +629,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -683,7 +643,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -698,7 +657,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: HttpObserve,
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
@@ -716,7 +674,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<ArrayBuffer>;
@@ -730,7 +687,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<Blob>;
@@ -744,7 +700,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<string>;
@@ -758,7 +713,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpEvent<ArrayBuffer>>;
@@ -772,7 +726,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpEvent<Blob>>;
@@ -786,7 +739,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpEvent<string>>;
@@ -800,7 +752,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -815,7 +766,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -830,7 +780,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpResponse<ArrayBuffer>>;
@@ -844,7 +793,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpResponse<Blob>>;
@@ -858,7 +806,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpResponse<string>>;
@@ -872,7 +819,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -887,7 +833,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -902,7 +847,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -917,7 +861,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -932,7 +875,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: HttpObserve,
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
@@ -950,21 +892,19 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
 
     /**
-   * Construct a HEAD request which interprets the body as a `Blob` and returns it.
-   *
-   * @return an `Observable` of the body as a `Blob`.
-   */
+     * Construct a HEAD request which interprets the body as a `Blob` and returns it.
+     *
+     * @return an `Observable` of the body as a `Blob`.
+     */
   }): Observable<ArrayBuffer>;
   head(url: string, options: {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<Blob>;
@@ -991,7 +931,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpEvent<ArrayBuffer>>;
@@ -1005,7 +944,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpEvent<Blob>>;
@@ -1019,7 +957,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpEvent<string>>;
@@ -1033,7 +970,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1048,7 +984,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1063,7 +998,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpResponse<ArrayBuffer>>;
@@ -1077,7 +1011,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpResponse<Blob>>;
@@ -1091,7 +1024,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpResponse<string>>;
@@ -1105,7 +1037,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1120,7 +1051,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1135,7 +1065,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1150,7 +1079,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1165,7 +1093,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: HttpObserve,
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
@@ -1212,7 +1139,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<ArrayBuffer>;
@@ -1226,7 +1152,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<Blob>;
@@ -1240,7 +1165,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<string>;
@@ -1254,7 +1178,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpEvent<ArrayBuffer>>;
@@ -1268,7 +1191,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpEvent<Blob>>;
@@ -1282,7 +1204,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpEvent<string>>;
@@ -1296,7 +1217,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1311,7 +1231,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1326,7 +1245,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpResponse<ArrayBuffer>>;
@@ -1340,7 +1258,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpResponse<Blob>>;
@@ -1354,7 +1271,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpResponse<string>>;
@@ -1368,7 +1284,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1383,7 +1298,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1398,7 +1312,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1413,7 +1326,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1428,7 +1340,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: HttpObserve,
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
@@ -1445,7 +1356,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<ArrayBuffer>;
@@ -1459,7 +1369,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<Blob>;
@@ -1473,7 +1382,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<string>;
@@ -1487,7 +1395,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpEvent<ArrayBuffer>>;
@@ -1501,7 +1408,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpEvent<Blob>>;
@@ -1515,7 +1421,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpEvent<string>>;
@@ -1529,7 +1434,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1544,7 +1448,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1559,7 +1462,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpResponse<ArrayBuffer>>;
@@ -1573,7 +1475,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpResponse<Blob>>;
@@ -1587,7 +1488,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpResponse<string>>;
@@ -1601,7 +1501,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1616,7 +1515,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1631,7 +1529,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1646,7 +1543,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1661,7 +1557,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: HttpObserve,
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
@@ -1678,7 +1573,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<ArrayBuffer>;
@@ -1692,7 +1586,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<Blob>;
@@ -1706,13 +1599,12 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<string>;
 
   /**
-   * Construct a POST request which interprets the body as an `ArrayBuffer` and returns the full event stream.
+   * Construct a PATCH request which interprets the body as an `ArrayBuffer` and returns the full event stream.
    *
    * @return an `Observable` of all `HttpEvent`s for the request, with a body type of `ArrayBuffer`.
    */
@@ -1720,7 +1612,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpEvent<ArrayBuffer>>;
@@ -1734,7 +1625,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpEvent<Blob>>;
@@ -1748,7 +1638,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpEvent<string>>;
@@ -1762,7 +1651,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1777,7 +1665,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1792,7 +1679,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpResponse<ArrayBuffer>>;
@@ -1806,7 +1692,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpResponse<Blob>>;
@@ -1820,7 +1705,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpResponse<string>>;
@@ -1834,7 +1718,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1849,7 +1732,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1864,7 +1746,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1879,7 +1760,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -1894,7 +1774,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: HttpObserve,
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
@@ -1911,7 +1790,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<ArrayBuffer>;
@@ -1925,7 +1803,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<Blob>;
@@ -1952,7 +1829,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpEvent<ArrayBuffer>>;
@@ -1966,7 +1842,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpEvent<Blob>>;
@@ -1980,7 +1855,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpEvent<string>>;
@@ -1994,7 +1868,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'events',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -2019,7 +1892,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'arraybuffer', withCredentials?: boolean,
   }): Observable<HttpResponse<ArrayBuffer>>;
@@ -2033,7 +1905,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'blob', withCredentials?: boolean,
   }): Observable<HttpResponse<Blob>>;
@@ -2047,7 +1918,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType: 'text', withCredentials?: boolean,
   }): Observable<HttpResponse<string>>;
@@ -2061,7 +1931,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -2076,7 +1945,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe: 'response',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -2091,7 +1959,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -2106,7 +1973,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: 'body',
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'json',
     withCredentials?: boolean,
@@ -2121,7 +1987,6 @@ export class HttpClient {
     headers?: HttpHeaders | {[header: string]: string | string[]},
     observe?: HttpObserve,
     params?: HttpParams|{[param: string]: string | string[]},
-    metadata?: any,
     reportProgress?: boolean,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,

@@ -18,7 +18,6 @@ interface HttpRequestInit {
   headers?: HttpHeaders;
   reportProgress?: boolean;
   params?: HttpParams;
-  metadata?: any;
   responseType?: 'arraybuffer'|'blob'|'json'|'text';
   withCredentials?: boolean;
 }
@@ -123,12 +122,6 @@ export class HttpRequest<T> {
   readonly params: HttpParams;
 
   /**
-   * Outgoing metadata for this request.
-   */
-  readonly metadata: any;
-
-
-  /**
    * The outgoing URL with all URL parameters set.
    */
   readonly urlWithParams: string;
@@ -137,7 +130,6 @@ export class HttpRequest<T> {
     headers?: HttpHeaders,
     reportProgress?: boolean,
     params?: HttpParams,
-    metadata?: any,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
   });
@@ -145,7 +137,6 @@ export class HttpRequest<T> {
     headers?: HttpHeaders,
     reportProgress?: boolean,
     params?: HttpParams,
-    metadata?: any,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
   });
@@ -153,7 +144,6 @@ export class HttpRequest<T> {
     headers?: HttpHeaders,
     reportProgress?: boolean,
     params?: HttpParams,
-    metadata?: any,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
   });
@@ -162,7 +152,6 @@ export class HttpRequest<T> {
         headers?: HttpHeaders,
         reportProgress?: boolean,
         params?: HttpParams,
-        metadata?: any,
         responseType?: 'arraybuffer'|'blob'|'json'|'text',
         withCredentials?: boolean,
       }|null,
@@ -170,7 +159,6 @@ export class HttpRequest<T> {
         headers?: HttpHeaders,
         reportProgress?: boolean,
         params?: HttpParams,
-        metadata?: any,
         responseType?: 'arraybuffer'|'blob'|'json'|'text',
         withCredentials?: boolean,
       }) {
@@ -208,10 +196,6 @@ export class HttpRequest<T> {
 
       if (!!options.params) {
         this.params = options.params;
-      }
-
-      if (!!options.metadata) {
-        this.metadata = options.metadata;
       }
     }
 
@@ -321,7 +305,6 @@ export class HttpRequest<T> {
     headers?: HttpHeaders,
     reportProgress?: boolean,
     params?: HttpParams,
-    metadata?: any,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
     body?: T|null,
@@ -334,7 +317,6 @@ export class HttpRequest<T> {
     headers?: HttpHeaders,
     reportProgress?: boolean,
     params?: HttpParams,
-    metadata?: any,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
     body?: V|null,
@@ -347,7 +329,6 @@ export class HttpRequest<T> {
     headers?: HttpHeaders,
     reportProgress?: boolean,
     params?: HttpParams,
-    metadata?: any,
     responseType?: 'arraybuffer'|'blob'|'json'|'text',
     withCredentials?: boolean,
     body?: any|null,
@@ -379,7 +360,6 @@ export class HttpRequest<T> {
     // `setParams` are used.
     let headers = update.headers || this.headers;
     let params = update.params || this.params;
-    let metadata = update.metadata || this.metadata;
 
     // Check whether the caller has asked to add headers.
     if (update.setHeaders !== undefined) {
@@ -393,14 +373,13 @@ export class HttpRequest<T> {
     if (update.setParams) {
       // Set every requested param.
       params = Object.keys(update.setParams)
-                   .reduce((params, param) => params.set(param, update.setParams ![param]), params);
+          .reduce((params, param) => params.set(param, update.setParams ![param]), params);
     }
 
     // Finally, construct the new HttpRequest using the pieces from above.
     return new HttpRequest(
-        method, url, body,
-        {
-            params, headers, metadata, reportProgress, responseType, withCredentials,
+        method, url, body, {
+          params, headers, reportProgress, responseType, withCredentials,
         });
   }
 }
