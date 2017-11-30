@@ -12,7 +12,7 @@ import {forkJoin} from 'rxjs/observable/forkJoin';
 import {fromPromise} from 'rxjs/observable/fromPromise';
 import {map} from 'rxjs/operator/map';
 import {AsyncValidatorFn, ValidationErrors, Validator, ValidatorFn} from './directives/validators';
-import {AbstractControl, FormControl} from './model';
+import {AbstractControl} from './model';
 
 function isEmptyInputValue(value: any): boolean {
   // we don't check for string here so it also works with arrays
@@ -23,6 +23,20 @@ function isEmptyInputValue(value: any): boolean {
  * Providers for validators to be used for {@link FormControl}s in a form.
  *
  * Provide this using `multi: true` to add validators.
+ *
+ * ### Example
+ *
+ * ```typescript
+ * @Directive({
+ *   selector: '[custom-validator]',
+ *   providers: [{provide: NG_VALIDATORS, useExisting: CustomValidatorDirective, multi: true}]
+ * })
+ * class CustomValidatorDirective implements Validator {
+ *   validate(c: AbstractControl): ValidationErrors | null {
+ *     return {"custom": true};
+ *   }
+ * }
+ * ```
  *
  * @stable
  */
