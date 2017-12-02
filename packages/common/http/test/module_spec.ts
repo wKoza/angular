@@ -50,7 +50,6 @@ class InterceptorB extends TestInterceptor {
 
 class InterceptorC implements HttpInterceptor {
   intercept(req: HttpRequest<any>, delegate: HttpHandler): Observable<HttpEvent<any>> {
-    console.log(JSON.stringify(req));
     req.metadata['test'] = false;
     req = req.clone({metadata: req.metadata});
     return delegate.handle(req);

@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+import {ddescribe} from '@angular/core/testing/src/testing_internal';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as ts from 'typescript';
@@ -104,7 +105,12 @@ describe('extract_i18n command line', () => {
   let write: (fileName: string, content: string) => void;
   let errorSpy: jasmine.Spy&((s: string) => void);
 
-  function writeConfig(tsconfig: string = '{"extends": "./tsconfig-base.json"}') {
+  function writeConfig(tsconfig: string = `{
+        "extends": "./tsconfig-base.json",
+        "angularCompilerOptions": {
+            "disableTypeScriptVersionCheck": true
+        }
+      }`) {
     write('tsconfig.json', tsconfig);
   }
 
@@ -167,6 +173,7 @@ describe('extract_i18n command line', () => {
     export class I18nModule {}
     `);
   }
+
 
   it('should extract xmb', () => {
     writeConfig();
