@@ -178,10 +178,7 @@ describe('ngc transformer command-line', () => {
     it('should report errors for ngfactory files that are not referenced by root files', () => {
       writeConfig(`{
           "extends": "./tsconfig-base.json",
-          "files": ["mymodule.ts"],
-          "angularCompilerOptions": {
-            "disableTypeScriptVersionCheck": true
-          }
+          "files": ["mymodule.ts"]
         }`);
       write('mymodule.ts', `
         import {NgModule, Component} from '@angular/core';
