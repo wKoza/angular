@@ -54,6 +54,27 @@ describe('ScrollService', () => {
     location = injector.get(Location);
   });
 
+  it('should call `updateScrollPositonInHistory()` after 200ms', fakeAsync(() => {
+    const updateScrollPositionInHistory = spyOn(scrollService, 'updateScrollPositionInHistory');
+
+    window.dispatchEvent(new Event('scroll'));
+    tick(200);
+    expect(updateScrollPositionInHistory).toHaveBeenCalled();
+  }));
+
+  it('should debounce `updateScrollPositonInHistory()`', fakeAsync(() => {
+    const updateScrollPositionInHistory = spyOn(scrollService, 'updateScrollPositionInHistory');
+
+    window.dispatchEvent(new Event('scroll'));
+    expect(updateScrollPositionInHistory).not.toHaveBeenCalled();
+    window.dispatchEvent(new Event('scroll'));
+    expect(updateScrollPositionInHistory).not.toHaveBeenCalled();
+    window.dispatchEvent(new Event('scroll'));
+    tick(250);
+    expect(updateScrollPositionInHistory).toHaveBeenCalled();
+    expect(updateScrollPositionInHistory).toHaveBeenCalledTimes(1);
+  }));
+
   it('should set `scrollRestoration` to `manual` if supported', () => {
     if (scrollService.supportManualScrollRestoration) {
       expect(window.history.scrollRestoration).toBe('manual');
