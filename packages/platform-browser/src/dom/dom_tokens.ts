@@ -7,6 +7,7 @@
  */
 
 import {DOCUMENT as commonDOCUMENT} from '@angular/common';
+import {InjectionToken} from '@angular/core';
 
 /**
  * A DI Token representing the main rendering context. In a browser this is the DOM Document.
